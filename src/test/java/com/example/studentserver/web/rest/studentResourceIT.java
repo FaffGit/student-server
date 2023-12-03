@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 
-public class itemResourceIT {
+public class studentResourceIT {
     @Autowired
     private StudentRepository studentRepository;
 
