@@ -2,32 +2,49 @@ package com.example.studentserver.web.rest;
 
 import com.example.studentserver.service.StudentService;
 import com.example.studentserver.domain.Student;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/students")
 public class StudentResource {
 
-    public final StudentService studentService;
+    private final StudentService studentService;
 
     public StudentResource(StudentService studentService) {
         this.studentService = studentService;
     }
 
-    @GetMapping("/student")
-    public List<Student> getAllItem() {
+    @GetMapping
+    public List<Student> getAllStudents() {
         return studentService.findAll();
     }
 
-    @GetMapping("/student/{id}")
-    public Student getItem(@PathVariable String id) {
-        Student student1 = new Student();
-        student1.setName("Pierre");
-        return student1;
+    @GetMapping("/{id}")
+    public Student getStudentById(@PathVariable Integer id) {
+        return studentService.findById(id).orElse(null);
+    }
+
+    @PostMapping
+    public Student saveStudent(@RequestBody Student student) {
+        return studentService.save(student);
+    }
+
+    @PutMapping("/{id}")
+    public Student updateStudent(@PathVariable Integer id, @RequestBody Student updatedStudent) {
+        Student existingStudent = studentService.findById(id).orElse(null);
+        if (existingStudent != null) {
+            existingStudent.setName(updatedStudent.getName());
+            existingStudent.setAge(updatedStudent.getAge());
+            return studentService.update(existingStudent);
+        } else {
+            return null;
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteStudent(@PathVariable Integer id) {
+        studentService.deleteById(id);
     }
 }
